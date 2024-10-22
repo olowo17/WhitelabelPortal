@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -40,4 +42,5 @@ public class SignUpRequest {
     private String branchCode;
 
     private Long auditorId;
+    private List<String> roles;
 }

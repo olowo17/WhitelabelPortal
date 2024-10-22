@@ -4,7 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
-
+import java.util.List;
+import java.util.Set;
 
 
 @Entity
@@ -17,7 +18,7 @@ import java.util.Date;
 @Table(name = "portal_users")
 public class PortalUser {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     Long institutionId;
     private String username;
@@ -31,9 +32,11 @@ public class PortalUser {
     @Temporal(TemporalType.DATE)
     private Date updateDate;
     private Long createBy;
-    @ManyToOne
-    private Role role;
-    @ManyToOne
+    //@JoinColumn(name = "role_id", nullable = false)
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<Role> roles;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "branch_id")
     private Branch branch;
     private boolean firstLogin;
     private boolean checker;

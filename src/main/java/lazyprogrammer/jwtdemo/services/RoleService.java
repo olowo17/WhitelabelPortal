@@ -11,6 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -33,6 +36,18 @@ public class RoleService {
 
         return savedRole.get();
 
+    }
+
+    public void loadRoles(){
+        List<Role> roles = new ArrayList<>();
+        Role roleSuperAdmin = new Role();
+        Role roleAdmin = new Role();
+        Role roleUser = new Role();
+        roleUser.setName("USER");
+        roleSuperAdmin.setName("SUPER_ADMIN");
+        roleAdmin.setName("ADMIN");
+
+        roleRepo.saveAll(roles);
     }
 
 }

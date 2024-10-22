@@ -9,7 +9,7 @@ import java.util.Optional;
 @Repository
 public interface InstitutionRepository extends JpaRepository<Institution, Long> {
 
-    Optional<Institution> findById(Long aLong);
+    Optional<Institution> findById(Long Long);
 
     Optional<Institution> findByCode(String code);
 }

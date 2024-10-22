@@ -6,7 +6,9 @@ import lazyprogrammer.jwtdemo.entities.Institution;
 import lazyprogrammer.jwtdemo.entities.PortalUser;
 import lazyprogrammer.jwtdemo.entities.Role;
 import lazyprogrammer.jwtdemo.exceptions.APIException;
+import lazyprogrammer.jwtdemo.exceptions.RolesNotAvailableException;
 import lazyprogrammer.jwtdemo.params.SignUpRequest;
+import lazyprogrammer.jwtdemo.repositories.RoleRepository;
 import lazyprogrammer.jwtdemo.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,19 +17,21 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 @RequiredArgsConstructor
 @Service
-
 public class PortalUserService {
     private final UserRepository userRepository;
     private final BranchService branchService;
     private final InstitutionService institutionService;
     private final RoleService roleService;
+    private final RoleRepository roleRepository;
     private static final Logger logger = Logger.getLogger(PortalUserService.class.getName());
 
     private static final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{5,}$";
@@ -61,20 +65,26 @@ public class PortalUserService {
     }
 
     PortalUser createdBy = creatorProfile.get();
-    Role role = roleService.getRoleById(signUpRequest.getRoleId());
+    //Role role = roleService.getRoleById(signUpRequest.getRoleId());
 
         if (!isCompliantPassword(signUpRequest.getPassword())) {
             String errorMessage = "Password not compliant";
             throw APIException.apiExceptionError(HttpStatus.BAD_REQUEST, errorMessage);
     }
-    PortalUser user = PortalUser.builder()
+
+        List<Role> roles =roleRepository.findByNameIn(signUpRequest.getRoles());
+        if (signUpRequest.getRoles().size() != roles.size()) {
+            throw new RolesNotAvailableException(signUpRequest.getRoles().toString());
+        }
+
+        PortalUser user = PortalUser.builder()
             .branch(branch)
             .checker(signUpRequest.getIsChecker())
             .username(signUpRequest.getEmail())
             .createDate(new Date())
             .institutionId(institution.getId())
             .email(signUpRequest.getEmail())
-            .role(role)
+            .roles(Set.copyOf(roles))
             .deleted(false)
             .firstName(signUpRequest.getFirstName())
             .lastName(signUpRequest.getLastName())

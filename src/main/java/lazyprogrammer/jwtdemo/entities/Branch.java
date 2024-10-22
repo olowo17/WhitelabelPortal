@@ -11,7 +11,7 @@ import lombok.*;
 @Table(name = "Branches")
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
+//@JsonIgnoreProperties(ignoreUnknown = true)
 public class Branch {
     Long institutionId;
     @Id

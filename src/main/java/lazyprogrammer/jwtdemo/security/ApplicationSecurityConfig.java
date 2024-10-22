@@ -31,7 +31,7 @@ public class ApplicationSecurityConfig {
         httpSecurity.csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable())
                 .authorizeHttpRequests(requests ->
 //                        requests.requestMatchers("/auth/**","/resource/secure","/resource/signup").permitAll()
-                        requests.requestMatchers("/auth/**","/resource/secure","/resource/secure1").permitAll()
+                        requests.requestMatchers("/auth/**","/mobile-portal/user/authenticate","/api/roles").permitAll()
                                 //.requestMatchers().permitAll()
                                 //.requestMatchers("/api/auth/signup").permitAll()
                                 .anyRequest()

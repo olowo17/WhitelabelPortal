@@ -12,7 +12,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class BranchService {
-    private BranchRepository branchRepo;
+    private final BranchRepository branchRepo;
 
     public Branch getBranchById(Long id) {
 

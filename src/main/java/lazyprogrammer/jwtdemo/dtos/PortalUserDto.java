@@ -5,6 +5,7 @@ import lazyprogrammer.jwtdemo.entities.Institution;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class PortalUserDto {
@@ -12,7 +13,7 @@ public class PortalUserDto {
 
     private String userName;
     private String password;
-
+    private List<String> roles;
     private String emailAddress;
 
     private String mobileNumber;
