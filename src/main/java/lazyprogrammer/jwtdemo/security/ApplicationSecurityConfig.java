@@ -32,7 +32,7 @@ public class ApplicationSecurityConfig {
                 .authorizeHttpRequests(requests ->
 //                        requests.requestMatchers("/auth/**","/resource/secure","/resource/signup").permitAll()
                         requests.requestMatchers("/auth/**","/mobile-portal/user/authenticate","/api/roles").permitAll()
-                                //.requestMatchers().permitAll()
+                                .requestMatchers("/resource/secure").hasAuthority("SUPER_ADMIN")
                                 //.requestMatchers("/api/auth/signup").permitAll()
                                 .anyRequest()
                                 .authenticated()
