@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 
@@ -35,7 +34,7 @@ public class PortalUser {
     //@JoinColumn(name = "role_id", nullable = false)
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "branch_id")
     private Branch branch;
     private boolean firstLogin;

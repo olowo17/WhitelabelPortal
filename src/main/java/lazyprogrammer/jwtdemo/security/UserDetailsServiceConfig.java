@@ -1,5 +1,6 @@
 package lazyprogrammer.jwtdemo.security;
 
+import lazyprogrammer.jwtdemo.dtos.CustomUserDetails;
 import lazyprogrammer.jwtdemo.entities.PortalUser;
 import lazyprogrammer.jwtdemo.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,20 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserDetailsServiceConfig {
 private final UserRepository userRepository;
+//    @Bean
+//    public UserDetailsService userDetailsService() {
+//        return username -> {
+//            Optional<PortalUser> user = userRepository.findByUsername(username);
+//            if (!user.isPresent()) {
+//                throw new UsernameNotFoundException("User not found");
+//            }
+//            return new org.springframework.security.core.userdetails.User(user.get().getUsername(), user.get().getPassword(),
+//                    user.get().getRoles().stream()
+//                            .map(role -> new SimpleGrantedAuthority(role.getName()))
+//                            .collect(Collectors.toList()));
+//        };
+//    }
+
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> {
@@ -24,10 +39,8 @@ private final UserRepository userRepository;
             if (!user.isPresent()) {
                 throw new UsernameNotFoundException("User not found");
             }
-            return new org.springframework.security.core.userdetails.User(user.get().getUsername(), user.get().getPassword(),
-                    user.get().getRoles().stream()
-                            .map(role -> new SimpleGrantedAuthority(role.getName()))
-                            .collect(Collectors.toList()));
+            // Return the CustomUserDetails with the PortalUser entity
+            return new CustomUserDetails(user.get());
         };
     }
 }

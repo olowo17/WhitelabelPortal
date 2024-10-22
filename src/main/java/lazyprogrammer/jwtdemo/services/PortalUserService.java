@@ -23,6 +23,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -36,6 +37,8 @@ public class PortalUserService {
 
     private static final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{5,}$";
     BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+
 
     public boolean isCompliantPassword(String password) {
         Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
@@ -104,4 +107,8 @@ public class PortalUserService {
     }
         return user;
 }
+
+
+
+
 }

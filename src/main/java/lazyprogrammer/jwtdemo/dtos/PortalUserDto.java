@@ -2,6 +2,7 @@ package lazyprogrammer.jwtdemo.dtos;
 
 import lazyprogrammer.jwtdemo.entities.Branch;
 import lazyprogrammer.jwtdemo.entities.Institution;
+import lazyprogrammer.jwtdemo.entities.Role;
 import lombok.Data;
 
 import java.util.Date;
@@ -13,7 +14,7 @@ public class PortalUserDto {
 
     private String userName;
     private String password;
-    private List<String> roles;
+    private List<Role> roles;
     private String emailAddress;
 
     private String mobileNumber;
