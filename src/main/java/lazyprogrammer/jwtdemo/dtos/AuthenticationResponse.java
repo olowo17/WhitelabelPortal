@@ -5,11 +5,13 @@ import lazyprogrammer.jwtdemo.vo.ServiceResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
-@AllArgsConstructor
+@Setter
 @Getter
+@AllArgsConstructor
 @Builder
 public class AuthenticationResponse extends ServiceResponse {
 
@@ -24,43 +26,13 @@ public class AuthenticationResponse extends ServiceResponse {
     }
 
 
-    public LoginData getData(){ return data;}
-
-    public void setData(LoginData data) {
-        this.data = data;
-    }
-
-
-
+    @Setter
+    @Getter
     public static class LoginData {
 
         private String token;
         private PortalUserDto user;
         private List<MenuInfoDto> verticalMenuItems;
-
-        public PortalUserDto getUser() {
-            return user;
-        }
-
-        public void setUser(PortalUserDto user) {
-            this.user = user;
-        }
-
-        public String getToken() {
-            return token;
-        }
-
-        public void setToken(String token) {
-            this.token = token;
-        }
-
-        public List<MenuInfoDto> getVerticalMenuItems() {
-            return verticalMenuItems;
-        }
-
-        public void setVerticalMenuItems(List<MenuInfoDto> verticalMenuItems) {
-            this.verticalMenuItems = verticalMenuItems;
-        }
 
     }
 

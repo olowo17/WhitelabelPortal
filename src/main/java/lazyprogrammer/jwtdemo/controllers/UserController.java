@@ -24,9 +24,9 @@ public class UserController {
     private final PortalUserService portalUserService;
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerAdmin(@RequestBody SignUpRequest signUpRequest) {
+    public ResponseEntity<?> registerPortalUser(@RequestBody SignUpRequest signUpRequest) {
         try {
-            PortalUser newUser = portalUserService.registerAdmin(signUpRequest);
+            PortalUser newUser = portalUserService.registerPortalUser(signUpRequest);
             return ResponseEntity.ok(newUser);
         } catch (APIException e) {
             return ResponseEntity.status(e.getStatus()).body(e.getMessage());
@@ -39,15 +39,5 @@ public class UserController {
 
 
 
-//    @PostMapping("/register")
-//    public ResponseEntity<PortalUserDto> saveUser(@RequestBody SignUpRequest signUpRequest) {
-//        if (Objects.isNull(signUpRequest)) {
-//            throw new InvalidPayloadException("Payload cannot be Null");
-//        }
-//        if(userService.registerAdmin(signUpRequest.getEmail())){
-//            throw new UserIdAlreadyExistException("Username is already taken");
-//        }
-//        return userService.saveUser(portalUserDto);
-//    }
 
 

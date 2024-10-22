@@ -1,6 +1,7 @@
 package lazyprogrammer.jwtdemo.dtos;
 
 import lazyprogrammer.jwtdemo.entities.PortalUser;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,16 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-public class CustomUserDetails implements UserDetails {
-    private final PortalUser user;
-
-    public CustomUserDetails(PortalUser user) {
-        this.user = user;
-    }
-
-    public PortalUser getUser() {
-        return user;
-    }
+public record CustomUserDetails(PortalUser user) implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

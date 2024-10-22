@@ -1,9 +1,13 @@
 package lazyprogrammer.jwtdemo.entities;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 
+@Setter
+@Getter
 @Entity
 @Table(name = "RoleFunctions")
 @NamedQueries({@NamedQuery(name = "RoleFunction.findAll", query = "SELECT r FROM RoleFunction r "),
@@ -18,30 +22,6 @@ public class RoleFunction  {
     private Menu menu;
     @ManyToOne
     private Role role;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Menu getMenu() {
-        return menu;
-    }
-
-    public void setMenu(Menu menu) {
-        this.menu = menu;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
 
 
 }

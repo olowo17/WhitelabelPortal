@@ -31,21 +31,18 @@ public class PortalUserService {
     private final UserRepository userRepository;
     private final BranchService branchService;
     private final InstitutionService institutionService;
-    private final RoleService roleService;
     private final RoleRepository roleRepository;
     private static final Logger logger = Logger.getLogger(PortalUserService.class.getName());
 
     private static final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{5,}$";
     BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-
-
     public boolean isCompliantPassword(String password) {
         Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
         return pattern.matcher(password).matches();
     }
 
-    public PortalUser registerAdmin(SignUpRequest signUpRequest){
+    public PortalUser registerPortalUser(SignUpRequest signUpRequest){
 
         Optional<PortalUser> existingAccount = userRepository.findByUsername(signUpRequest.getEmail());
         if (existingAccount.isPresent()) {
@@ -107,8 +104,5 @@ public class PortalUserService {
     }
         return user;
 }
-
-
-
 
 }
