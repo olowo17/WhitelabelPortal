@@ -5,25 +5,33 @@ import lazyprogrammer.jwtdemo.entities.Branch;
 import lazyprogrammer.jwtdemo.entities.Institution;
 import lazyprogrammer.jwtdemo.entities.PortalUser;
 import lazyprogrammer.jwtdemo.entities.Role;
+import lazyprogrammer.jwtdemo.enums.AuditType;
+import lazyprogrammer.jwtdemo.enums.PendingRequestStatus;
 import lazyprogrammer.jwtdemo.exceptions.APIException;
 import lazyprogrammer.jwtdemo.exceptions.RolesNotAvailableException;
-import lazyprogrammer.jwtdemo.params.SignUpRequest;
+import lazyprogrammer.jwtdemo.infrastructure.context.Context;
+import lazyprogrammer.jwtdemo.params.*;
 import lazyprogrammer.jwtdemo.repositories.RoleRepository;
 import lazyprogrammer.jwtdemo.repositories.UserRepository;
+import lazyprogrammer.jwtdemo.security.jwt.JwtUtil;
+import lazyprogrammer.jwtdemo.utils.DateHelper;
+import lazyprogrammer.jwtdemo.utils.LocaleHandler;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import static lazyprogrammer.jwtdemo.utils.GeneralConstants.PASSWORD_PATTERN;
+import static lazyprogrammer.jwtdemo.vo.ResponseMessages.*;
 
 @RequiredArgsConstructor
 @Service
@@ -32,12 +40,11 @@ public class PortalUserService {
     private final BranchService branchService;
     private final InstitutionService institutionService;
     private final RoleRepository roleRepository;
-    private static final Logger logger = Logger.getLogger(PortalUserService.class.getName());
 
-    private static final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{5,}$";
+    private static final Logger logger = Logger.getLogger(PortalUserService.class.getName());
     BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    public boolean isCompliantPassword(String password) {
+    public static boolean isCompliantPassword(String password) {
         Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
         return pattern.matcher(password).matches();
     }
@@ -104,5 +111,6 @@ public class PortalUserService {
     }
         return user;
 }
+
 
 }

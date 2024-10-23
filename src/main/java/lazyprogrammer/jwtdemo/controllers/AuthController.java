@@ -1,29 +1,21 @@
 package lazyprogrammer.jwtdemo.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import jakarta.validation.Valid;
 import lazyprogrammer.jwtdemo.dtos.AuthenticationResponse;
-import lazyprogrammer.jwtdemo.dtos.CustomUserDetails;
-import lazyprogrammer.jwtdemo.dtos.PortalUserDto;
-import lazyprogrammer.jwtdemo.entities.Institution;
-import lazyprogrammer.jwtdemo.entities.PortalUser;
 import lazyprogrammer.jwtdemo.infrastructure.context.Context;
 import lazyprogrammer.jwtdemo.infrastructure.context.ContextService;
-import lazyprogrammer.jwtdemo.mappers.PortalUserMapper;
-import lazyprogrammer.jwtdemo.security.jwt.JwtUtil;
+import lazyprogrammer.jwtdemo.params.CompleteResetPasswordRequest;
+import lazyprogrammer.jwtdemo.params.ResetPasswordRequest;
+import lazyprogrammer.jwtdemo.params.ResetPasswordResponse;
 import lazyprogrammer.jwtdemo.services.AuthService;
-import lazyprogrammer.jwtdemo.services.InstitutionService;
-import lazyprogrammer.jwtdemo.services.RoleService;
-import lazyprogrammer.jwtdemo.utils.LocaleHandler;
-import lazyprogrammer.jwtdemo.vo.ResponseMessages;
+import lazyprogrammer.jwtdemo.vo.APIResponse;
 import lazyprogrammer.jwtdemo.vo.ServiceResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -34,6 +26,7 @@ public class AuthController {
     private AuthService authService;
     @Autowired
     private ContextService contextService;
+
 
     private static final Logger LOG = LoggerFactory.getLogger(AuthController.class.getName());
 
@@ -48,6 +41,33 @@ public class AuthController {
 
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/password-reset/initiate")
+    public APIResponse<?> initiateReset(@Valid @RequestBody ResetPasswordRequest resetPasswordRequest) {
+        Context ctx = contextService.getContextForHttpRequest();
+        ResetPasswordResponse resetPasswordResponse = authService.initiateResetPassword(ctx, resetPasswordRequest);
+
+        return APIResponse.builder()
+                .data(resetPasswordResponse)
+                .traceID(ctx.getTraceID())
+                .code(ServiceResponse.SUCCESS)
+                .description("Password reset successfully initiated")
+                .build();
+    }
+
+    @PostMapping("/password-reset/complete")
+    public APIResponse<?> completeReset(@Valid @RequestBody CompleteResetPasswordRequest completeReset) {
+        Context ctx = contextService.getContextForHttpRequest();
+        ResetPasswordResponse resetPasswordResponse = authService.completePasswordReset(ctx, completeReset);
+
+        return APIResponse.builder()
+                .data(resetPasswordResponse)
+                .traceID(ctx.getTraceID())
+                .code(ServiceResponse.SUCCESS)
+                .description("Password reset complete")
+                .build();
+    }
+
 
 
 }

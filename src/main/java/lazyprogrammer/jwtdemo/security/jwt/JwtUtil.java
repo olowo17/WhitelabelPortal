@@ -4,15 +4,20 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
+import lazyprogrammer.jwtdemo.entities.PortalUser;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+
+import static java.util.stream.Collectors.toList;
 
 @Component
 public class JwtUtil {
@@ -31,6 +36,20 @@ public class JwtUtil {
         Map<String, Object> claims = new HashMap<>();
         return createToken(claims, userDetails.getUsername());
     }
+
+    public String generateToken(PortalUser portalUser) {
+        Map<String, Object> claims = new HashMap<>();
+        return createToken(claims, portalUser.getUsername());
+    }
+
+    public String generateToken(Map<String, Object> extraClaims, PortalUser portalUser) {
+        Long userId = portalUser.getId();
+        String email = portalUser.getEmail();
+        extraClaims.put("userId", userId);
+        return createToken(extraClaims, portalUser.getUsername());
+    }
+
+
 
     private String createToken(Map<String, Object> claims, String username) {
         return Jwts.builder().claims(claims)

@@ -23,4 +23,6 @@ public class Institution implements Serializable {
     @Column(name = "BANK_CODE")
     private String bankCode;
     private boolean isISW;
+
+
 }
