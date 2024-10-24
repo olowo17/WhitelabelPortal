@@ -1,10 +1,13 @@
 package lazyprogrammer.jwtdemo.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.micrometer.common.util.StringUtils;
 import jakarta.validation.Valid;
 import lazyprogrammer.jwtdemo.dtos.AuthenticationResponse;
+import lazyprogrammer.jwtdemo.dtos.TokenUser;
 import lazyprogrammer.jwtdemo.infrastructure.context.Context;
 import lazyprogrammer.jwtdemo.infrastructure.context.ContextService;
+import lazyprogrammer.jwtdemo.params.ChangePasswordRequest;
 import lazyprogrammer.jwtdemo.params.CompleteResetPasswordRequest;
 import lazyprogrammer.jwtdemo.params.ResetPasswordRequest;
 import lazyprogrammer.jwtdemo.params.ResetPasswordResponse;
@@ -67,8 +70,33 @@ public class AuthController {
                 .description("Password reset complete")
                 .build();
     }
+    @PostMapping("/change-password")
+    public APIResponse<?> changePassword(
+            @RequestAttribute("user") TokenUser user,
+            @Valid @RequestBody ChangePasswordRequest changeRequest
+    ) {
+        System.out.println(user);
+        System.out.println(user.getId());
 
+        Context ctx = contextService.getContextForHttpRequest();
 
+        changeRequest.setAuditorId(user.getId());
+        if (!user.getIsSuperAdmin()) {
+            changeRequest.setInstitutionCode(user.getInstitution().getCode());
+        }
+
+        if (StringUtils.isBlank(changeRequest.getUserName())) {
+            changeRequest.setUserName(user.getUsername());
+        }
+
+        ResetPasswordResponse resetPasswordResponse = authService.changePassword(ctx, changeRequest);
+        return APIResponse.builder()
+                .data(resetPasswordResponse)
+                .traceID(ctx.getTraceID())
+                .code(ServiceResponse.SUCCESS)
+                .description("Change password successful")
+                .build();
+    }
 
 }
 

@@ -1,27 +1,29 @@
 package lazyprogrammer.jwtdemo.security.jwt;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import lazyprogrammer.jwtdemo.entities.PortalUser;
+import lazyprogrammer.jwtdemo.repositories.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 import static java.util.stream.Collectors.toList;
 
 @Component
 public class JwtUtil {
-
+    @Autowired
+    private UserRepository userRepository;
     @Value("${jwt.secret}")
     private String secret;
 
@@ -49,16 +51,46 @@ public class JwtUtil {
         return createToken(extraClaims, portalUser.getUsername());
     }
 
-
-
     private String createToken(Map<String, Object> claims, String username) {
-        return Jwts.builder().claims(claims)
-                .subject(username)
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + tokenLifeSpan))
+        ObjectMapper objectMapper = new ObjectMapper();
+        Optional<PortalUser> optionalUser = userRepository.findByUsername(username);
+
+        if (optionalUser.isEmpty()) {
+            throw new RuntimeException("User not found with username: " + username);
+        }
+
+        PortalUser user = optionalUser.get();
+
+        // Serializing the user object to JSON
+        String userJson;
+        try {
+            userJson = objectMapper.writeValueAsString(user);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Failed to serialize user object to JSON", e);
+        }
+
+        // Adding the serialized user JSON to claims
+        claims.put("user", userJson);
+
+        // Creating the JWT token
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(username)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + tokenLifeSpan))
                 .signWith(getSigningKey())
                 .compact();
     }
+
+
+//    private String createToken(Map<String, Object> claims, String username) {
+//        return Jwts.builder().claims(claims)
+//                .subject(username)
+//                .issuedAt(new Date(System.currentTimeMillis()))
+//                .expiration(new Date(System.currentTimeMillis() + tokenLifeSpan))
+//                .signWith(getSigningKey())
+//                .compact();
+//    }
 
     private Claims extractAllClaims(String token) {
         //return Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token).getBody();

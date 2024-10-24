@@ -97,6 +97,7 @@ public class AuthService {
 
         AuthenticationResponse.LoginData data = new AuthenticationResponse.LoginData();
         data.setToken(token);
+
         data.setUser(portalUserDto);
         data.setVerticalMenuItems(roleService.getMenus(ctx, firstRoleId));
 
@@ -145,6 +146,42 @@ public class AuthService {
                 .build();
 
     }
+
+    public ResetPasswordResponse changePassword(Context ctx, ChangePasswordRequest changeRequest){
+        PortalUser user = getUserByUserNameOrEmail(ctx,changeRequest.getUserName());
+        try {
+            if (!passwordEncoder.matches(changeRequest.getCurrentPassword(),user.getPassword())){
+                throw new Exception("password not a match");
+            }
+        } catch (Exception e) {
+            throw APIException.contextualError(ctx, HttpStatus.FORBIDDEN, ctx.getMessage(INVALID_LOGIN));
+        }
+        if (!isCompliantPassword(changeRequest.getProposedPassword())) {
+            throw APIException.contextualError(ctx, HttpStatus.BAD_REQUEST, ctx.getMessage(PASSWORD_NOT_COMPLIANT));
+        }
+        user.setPassword(passwordEncoder.encode(changeRequest.getProposedPassword()));
+        user.setFirstLogin(false);
+        userRepository.save(user);
+
+        String details = String.format("Initiate complete admin password. Username: %s", user.getUsername());
+        CreateAudit audit = CreateAudit.builder()
+                .actionOn(user.getUsername())
+                .actionBy(user.getUsername())
+                .auditorId(user.getId())
+                .auditType(AuditType.CHANGE_PASSWORD)
+                .details(details)
+                .institutionId(user.getInstitutionId())
+                .status(PendingRequestStatus.APPROVED)
+                .userIp(ctx.getSourceIpAddress())
+                .build();
+        //auditRepo.addInitiateAudit(audit);
+
+        return ResetPasswordResponse.builder()
+                .actionMessage(ctx.getMessage(CHANGE_PASSWORD_COMPLETE))
+                .initiatedDate(DateHelper.formatDate(new Date()))
+                .build();
+    }
+
     public ResetPasswordResponse completePasswordReset(Context ctx, CompleteResetPasswordRequest completeResetPasswordRequest){
          String email = jwtUtil.extractUsernameFromToken(completeResetPasswordRequest.getToken());
          PortalUser user = userRepository.findByUsername(email).orElseThrow(()->new UserNotFoundException("user not found"));
@@ -154,6 +191,7 @@ public class AuthService {
          }
          String encodedPassword = passwordEncoder.encode(completeResetPasswordRequest.getPassword());
          user.setPassword(encodedPassword);
+         // might not be necesary here
          user.setFirstLogin(false);
          userRepository.save(user);
 
@@ -177,6 +215,8 @@ public class AuthService {
                 .initiatedDate(DateHelper.formatDate(new Date()))
                 .build();
     }
+
+
     private void sendResetEmail(Context ctx, ResetTokenInfo resetTokenInfo, String resetToken) {
         String content = String.format("%s %s?token=%s", ctx.getMessage(PASSWORD_RESET_EMAIL_MESSAGE), completeResetURL, resetToken);
         messagingService.sendEmail(
