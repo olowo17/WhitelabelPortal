@@ -96,9 +96,11 @@ public class AuthService {
         Long firstRoleId = roleService.getFirstRoleId(user);
 
         AuthenticationResponse.LoginData data = new AuthenticationResponse.LoginData();
+
         data.setToken(token);
 
         data.setUser(portalUserDto);
+
         data.setVerticalMenuItems(roleService.getMenus(ctx, firstRoleId));
 
         return new AuthenticationResponse(data);
@@ -192,7 +194,7 @@ public class AuthService {
          String encodedPassword = passwordEncoder.encode(completeResetPasswordRequest.getPassword());
          user.setPassword(encodedPassword);
          // might not be necesary here
-         user.setFirstLogin(false);
+        // user.setFirstLogin(false);
          userRepository.save(user);
 
 

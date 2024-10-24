@@ -1,12 +1,20 @@
 package lazyprogrammer.jwtdemo.security.jwt;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
+import jakarta.servlet.http.HttpServletRequest;
+import lazyprogrammer.jwtdemo.dtos.PortalUserDto;
+import lazyprogrammer.jwtdemo.dtos.TokenUser;
 import lazyprogrammer.jwtdemo.entities.PortalUser;
+import lazyprogrammer.jwtdemo.mappers.PortalUserMapper;
 import lazyprogrammer.jwtdemo.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,11 +32,31 @@ import static java.util.stream.Collectors.toList;
 public class JwtUtil {
     @Autowired
     private UserRepository userRepository;
+
     @Value("${jwt.secret}")
     private String secret;
 
     @Value("${jwt.token.lifespan}")
     private long tokenLifeSpan;
+
+    private static final String SECRET_KEY = "T@K@N3C_P"; // Replace with your actual secret
+
+    // Method to extract and decode the JWT token and return the TokenUser
+    public TokenUser getTokenUserFromRequest(HttpServletRequest request) throws Exception {
+        String token = extractTokenFromHeader(request);
+        String username = extractUsernameFromToken(token);
+        Optional<PortalUser> portalUser = userRepository.findByUsername(username);
+        return PortalUserMapper.mapEntityToTokenUser(portalUser.get());
+    }
+
+    // Method to extract the JWT token from the request headers
+    private String extractTokenFromHeader(HttpServletRequest request) {
+        String token = request.getHeader("Authorization"); // Or request.getHeader("sessionID");
+        if (token == null || !token.startsWith("Bearer ")) {
+            throw new RuntimeException("Missing or invalid Authorization header");
+        }
+        return token.substring(7); // Remove "Bearer " prefix
+    }
 
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(secret.getBytes());
@@ -42,13 +70,6 @@ public class JwtUtil {
     public String generateToken(PortalUser portalUser) {
         Map<String, Object> claims = new HashMap<>();
         return createToken(claims, portalUser.getUsername());
-    }
-
-    public String generateToken(Map<String, Object> extraClaims, PortalUser portalUser) {
-        Long userId = portalUser.getId();
-        String email = portalUser.getEmail();
-        extraClaims.put("userId", userId);
-        return createToken(extraClaims, portalUser.getUsername());
     }
 
     private String createToken(Map<String, Object> claims, String username) {
@@ -82,6 +103,12 @@ public class JwtUtil {
                 .compact();
     }
 
+    public String generateToken(Map<String, Object> extraClaims, PortalUser portalUser) {
+        Long userId = portalUser.getId();
+        String email = portalUser.getEmail();
+        extraClaims.put("userId", userId);
+        return createToken(extraClaims, portalUser.getUsername());
+    }
 
 //    private String createToken(Map<String, Object> claims, String username) {
 //        return Jwts.builder().claims(claims)

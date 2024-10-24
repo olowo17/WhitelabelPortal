@@ -2,15 +2,20 @@ package lazyprogrammer.jwtdemo.mappers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lazyprogrammer.jwtdemo.dtos.PortalUserDto;
+import lazyprogrammer.jwtdemo.dtos.TokenUser;
 import lazyprogrammer.jwtdemo.entities.Institution;
 import lazyprogrammer.jwtdemo.entities.PortalUser;
-import lazyprogrammer.jwtdemo.entities.Role;
+import lazyprogrammer.jwtdemo.repositories.InstitutionRepository;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
+@RequiredArgsConstructor
+@Data
 public class PortalUserMapper {
+    private static final InstitutionRepository institutionRepository = null;
 
     public static PortalUserDto mapEntityToDTO(PortalUser user) throws JsonProcessingException {
 
@@ -20,25 +25,28 @@ public class PortalUserMapper {
 
     }
 
-    public static PortalUserDto mapEntityToDTO(PortalUser user, Institution institution) throws JsonProcessingException {
+    public static TokenUser mapEntityToTokenUser(PortalUser portalUser) throws JsonProcessingException {
+        TokenUser tokenUser = new TokenUser();
+        tokenUser.setBranch(portalUser.getBranch());
+        tokenUser.setId(portalUser.getId());
+        tokenUser.setEmailAddress(portalUser.getEmail());
+        tokenUser.setUsername(portalUser.getUsername());
+        return tokenUser;
+    }
 
-//        PortalUserDto dto = JSONHelper.copyFields(user, PortalUserDto.class).get();
-//
-//        dto.setInstitution(institution);
-//
-//        return dto;
-
+    public static PortalUserDto mapEntityToDTO(PortalUser user, Institution institution) {
 
             PortalUserDto dto = new PortalUserDto();
             dto.setId(user.getId());
-            dto.setUserName(user.getUsername());  // Ensure this is mapped correctly
-            dto.setEmailAddress(user.getEmail());  // Ensure this is mapped correctly
+            dto.setUserName(user.getUsername());
+            dto.setEmailAddress(user.getEmail());
             dto.setMobileNumber(user.getMobileNumber());
             dto.setFirstName(user.getFirstName());
             dto.setLastName(user.getLastName());
             dto.setStatus(user.isStatus());
             dto.setBranch(user.getBranch());
             dto.setInstitution(institution);
+            dto.setFirstLogin(user.isFirstLogin());
             dto.setRoles(new ArrayList<>(user.getRoles()));
             dto.setPassword(user.getPassword());
             dto.setDateCreated(String.valueOf(user.getCreateDate()));

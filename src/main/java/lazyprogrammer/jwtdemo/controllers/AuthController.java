@@ -2,6 +2,7 @@ package lazyprogrammer.jwtdemo.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.micrometer.common.util.StringUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lazyprogrammer.jwtdemo.dtos.AuthenticationResponse;
 import lazyprogrammer.jwtdemo.dtos.TokenUser;
@@ -11,6 +12,7 @@ import lazyprogrammer.jwtdemo.params.ChangePasswordRequest;
 import lazyprogrammer.jwtdemo.params.CompleteResetPasswordRequest;
 import lazyprogrammer.jwtdemo.params.ResetPasswordRequest;
 import lazyprogrammer.jwtdemo.params.ResetPasswordResponse;
+import lazyprogrammer.jwtdemo.security.jwt.JwtUtil;
 import lazyprogrammer.jwtdemo.services.AuthService;
 import lazyprogrammer.jwtdemo.vo.APIResponse;
 import lazyprogrammer.jwtdemo.vo.ServiceResponse;
@@ -29,6 +31,8 @@ public class AuthController {
     private AuthService authService;
     @Autowired
     private ContextService contextService;
+    @Autowired
+    private JwtUtil jwtUtil;
 
 
     private static final Logger LOG = LoggerFactory.getLogger(AuthController.class.getName());
@@ -72,9 +76,16 @@ public class AuthController {
     }
     @PostMapping("/change-password")
     public APIResponse<?> changePassword(
-            @RequestAttribute("user") TokenUser user,
+            HttpServletRequest request,
             @Valid @RequestBody ChangePasswordRequest changeRequest
     ) {
+        TokenUser user = null;
+        try {
+            user = jwtUtil.getTokenUserFromRequest(request);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
         System.out.println(user);
         System.out.println(user.getId());
 
