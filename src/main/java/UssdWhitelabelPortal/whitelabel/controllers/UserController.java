@@ -5,6 +5,8 @@ import UssdWhitelabelPortal.whitelabel.entities.PortalUser;
 import UssdWhitelabelPortal.whitelabel.exceptions.APIException;
 import UssdWhitelabelPortal.whitelabel.params.SignUpRequest;
 import UssdWhitelabelPortal.whitelabel.services.PortalUserService;
+import UssdWhitelabelPortal.whitelabel.vo.APIResponse;
+import UssdWhitelabelPortal.whitelabel.vo.ServiceResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,16 +20,29 @@ public class UserController {
     private final PortalUserService portalUserService;
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerPortalUser(@RequestBody SignUpRequest signUpRequest) {
-        try {
-            PortalUser newUser = portalUserService.registerPortalUser(signUpRequest);
-            return ResponseEntity.ok(newUser);
-        } catch (APIException e) {
-            return ResponseEntity.status(e.getStatus()).body(e.getMessage());
-        } catch (Exception e) {
+    public APIResponse<?> registerPortalUser(@RequestBody SignUpRequest signUpRequest) {
 
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred: " + e.getMessage());
+        PortalUser newUser;
+        try {
+            newUser = portalUserService.registerPortalUser(signUpRequest);
+        } catch (APIException e) {
+            return APIResponse.builder()
+                    .data(null)
+                    .code(ServiceResponse.ERROR)
+                    .description("Error occurred during signup: " + e.getMessage())
+                    .build();
+        } catch (Exception e) {
+            return APIResponse.builder()
+                    .data(null)
+                    .code(ServiceResponse.ERROR)
+                    .description("An unexpected error occurred: " + e.getMessage())
+                    .build();
         }
+        return APIResponse.builder()
+                .data(newUser)
+                .code(ServiceResponse.SUCCESS)
+                .description("ADMIN added successfully")
+                .build();
     }
 }
 
