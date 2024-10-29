@@ -23,7 +23,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.stream.Collectors;
 
 @RestController
 //@RequiredArgsConstructor
@@ -40,10 +43,8 @@ public class AuthController {
     private static final Logger LOG = LoggerFactory.getLogger(AuthController.class.getName());
 
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponse> createAuthenticationToken(
-            @RequestParam(value = "email") String email,
-            @RequestParam(value = "password") String password)
-            throws BadCredentialsException, JsonProcessingException {
+    public ResponseEntity<AuthenticationResponse> createAuthenticationToken(@RequestParam(value = "email") String email,
+                                                                            @RequestParam(value = "password") String password) throws BadCredentialsException, JsonProcessingException {
 
         Context ctx = contextService.getContextForHttpRequest();
         AuthenticationResponse response = null;
@@ -65,7 +66,17 @@ public class AuthController {
     }
 
     @PostMapping("/password-reset/initiate")
-    public APIResponse<?> initiateReset(@Valid @RequestBody ResetPasswordRequest resetPasswordRequest) {
+    public APIResponse<?> initiateReset(@Valid @RequestBody ResetPasswordRequest resetPasswordRequest, BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            String errorMessage = bindingResult.getFieldErrors().stream()
+                    .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                    .collect(Collectors.joining(", "));
+            return APIResponse.builder()
+                    .code(ServiceResponse.ERROR)
+                    .description("Validation error(s): " + errorMessage)
+                    .build();
+        }
         Context ctx = contextService.getContextForHttpRequest();
         ResetPasswordResponse resetPasswordResponse = null;
 
@@ -107,16 +118,25 @@ public class AuthController {
     }
 
     @PostMapping("/password-reset/complete")
-    public APIResponse<?> completeReset(@Valid @RequestBody CompleteResetPasswordRequest completeReset) {
+    public APIResponse<?> completeReset(@Valid @RequestBody CompleteResetPasswordRequest completeReset, BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            String errorMessage = bindingResult.getFieldErrors().stream()
+                    .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                    .collect(Collectors.joining(", "));
+            return APIResponse.builder()
+                    .code(ServiceResponse.ERROR)
+                    .description("Validation error(s): " + errorMessage)
+                    .build();
+        }
         Context ctx = contextService.getContextForHttpRequest();
         ResetPasswordResponse resetPasswordResponse = null;
 
         try {
-            // Attempt to complete the password reset process
             resetPasswordResponse = authService.completePasswordReset(ctx, completeReset);
 
         } catch (APIException e) {
-            // Handle business logic or validation errors
+
             return APIResponse.builder()
                     .code(ServiceResponse.ERROR)
                     .traceID(ctx.getTraceID())
@@ -125,7 +145,7 @@ public class AuthController {
                     .build();
 
         } catch (IllegalArgumentException e) {
-            // Handle errors related to invalid input (e.g., missing parameters)
+
             return APIResponse.builder()
                     .code(ServiceResponse.ERROR)
                     .traceID(ctx.getTraceID())
@@ -153,7 +173,18 @@ public class AuthController {
     }
 
     @PostMapping("/change-password")
-    public APIResponse<?> changePassword(HttpServletRequest request, @Valid @RequestBody ChangePasswordRequest changeRequest) {
+    public APIResponse<?> changePassword(HttpServletRequest request, @Valid @RequestBody ChangePasswordRequest changeRequest,
+                                         BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            String errorMessage = bindingResult.getFieldErrors().stream()
+                    .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                    .collect(Collectors.joining(", "));
+            return APIResponse.builder()
+                    .code(ServiceResponse.ERROR)
+                    .description("Validation error(s): " + errorMessage)
+                    .build();
+        }
 
         TokenUser user = null;
         Context ctx = contextService.getContextForHttpRequest();
