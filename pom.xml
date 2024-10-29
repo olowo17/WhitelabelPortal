@@ -8,11 +8,11 @@
         <version>3.3.3</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.interswitch</groupId>
-    <artifactId>whitelabel</artifactId>
+    <groupId>com.isw.ussd</groupId>
+    <artifactId>ussd-whitelabel-portal</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>ussd whitelabel portal</name>
-    <description>Whitelabel Portal</description>
+    <name>ussd-whitelabel-portal</name>
+    <description>ussd Whitelabel admin Portal</description>
     <url/>
     <licenses>
         <license/>
