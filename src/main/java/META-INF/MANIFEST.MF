@@ -1,2 +1,2 @@
 Manifest-Version: 1.0
-Main-Class: UssdWhitelabelPortal.whitelabel.WhitelabelPortalApplication
+Main-Class: com.isw.ussd.whitelable.portal.WhitelabelPortalApplication

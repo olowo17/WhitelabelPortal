@@ -38,13 +38,15 @@ public class AuthController {
     private ContextService contextService;
     @Autowired
     private JwtUtil jwtUtil;
+    @Autowired
+    private HttpServletRequest request;
 
-
-    private static final Logger LOG = LoggerFactory.getLogger(AuthController.class.getName());
+    static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> createAuthenticationToken(@RequestParam(value = "email") String email,
                                                                             @RequestParam(value = "password") String password) throws BadCredentialsException, JsonProcessingException {
+        logger.info("URL called: {}", request.getRequestURL());
 
         Context ctx = contextService.getContextForHttpRequest();
         AuthenticationResponse response = null;
@@ -67,6 +69,7 @@ public class AuthController {
 
     @PostMapping("/password-reset/initiate")
     public APIResponse<?> initiateReset(@Valid @RequestBody ResetPasswordRequest resetPasswordRequest, BindingResult bindingResult) {
+        logger.info("URL called: {}", request.getRequestURL());
 
         if (bindingResult.hasErrors()) {
             String errorMessage = bindingResult.getFieldErrors().stream()
@@ -104,7 +107,7 @@ public class AuthController {
             return APIResponse.builder()
                     .code(ServiceResponse.ERROR)
                     .traceID(ctx.getTraceID())
-                    .description("An unexpected error occurred: " + e.getMessage())
+                    .description("Unexpected error occurred: " + e.getMessage())
                     .statusCode(HttpStatus.NOT_FOUND)
                     .build();
         }
@@ -119,6 +122,7 @@ public class AuthController {
 
     @PostMapping("/password-reset/complete")
     public APIResponse<?> completeReset(@Valid @RequestBody CompleteResetPasswordRequest completeReset, BindingResult bindingResult) {
+        logger.info("URL called: {}", request.getRequestURL());;
 
         if (bindingResult.hasErrors()) {
             String errorMessage = bindingResult.getFieldErrors().stream()
@@ -154,7 +158,7 @@ public class AuthController {
                     .build();
 
         } catch (Exception e) {
-            // Handle any unexpected errors
+
             return APIResponse.builder()
                     .code(ServiceResponse.ERROR)
                     .traceID(ctx.getTraceID())
@@ -163,7 +167,6 @@ public class AuthController {
                     .build();
         }
 
-        // If successful, return the success response
         return APIResponse.builder()
                 .data(resetPasswordResponse)
                 .traceID(ctx.getTraceID())
@@ -173,8 +176,8 @@ public class AuthController {
     }
 
     @PostMapping("/change-password")
-    public APIResponse<?> changePassword(HttpServletRequest request, @Valid @RequestBody ChangePasswordRequest changeRequest,
-                                         BindingResult bindingResult) {
+    public APIResponse<?> changePassword(HttpServletRequest request, @Valid @RequestBody ChangePasswordRequest changeRequest, BindingResult bindingResult) {
+        logger.info("URL called: {}", request.getRequestURL());
 
         if (bindingResult.hasErrors()) {
             String errorMessage = bindingResult.getFieldErrors().stream()
@@ -226,7 +229,7 @@ public class AuthController {
             return APIResponse.builder()
                     .code(ServiceResponse.ERROR)
                     .traceID(ctx.getTraceID())
-                    .description("An unexpected error occurred: " + e.getMessage())
+                    .description("Unexpected error occurred: " + e.getMessage())
                     .build();
         }
 

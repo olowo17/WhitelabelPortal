@@ -7,8 +7,11 @@ import com.isw.ussd.whitelable.portal.params.SignUpRequest;
 import com.isw.ussd.whitelable.portal.services.PortalUserService;
 import com.isw.ussd.whitelable.portal.vo.APIResponse;
 import com.isw.ussd.whitelable.portal.vo.ServiceResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,20 +24,24 @@ public class UserController {
 
     private final PortalUserService portalUserService;
 
+    private final HttpServletRequest request;
+
+    static final Logger logger = LoggerFactory.getLogger(UserController.class);
+
+
     @PostMapping("/signup")
     public APIResponse<?> registerPortalUser(@Valid @RequestBody SignUpRequest signUpRequest, BindingResult bindingResult) {
+        logger.info("URL called: {}", request.getRequestURL());
 
-        // Check for validation errors
         if (bindingResult.hasErrors()) {
             String errorMessage = bindingResult.getFieldErrors().stream()
                     .map(error -> error.getField() + ": " + error.getDefaultMessage())
-                    .collect(Collectors.joining(", "));
+                    .collect(Collectors.joining(", "+'\''));
 
-            // Return API response with validation error message
             return APIResponse.builder()
                     .data(null)
                     .code(ServiceResponse.ERROR)
-                    .description("Validation error(s): " + errorMessage)
+                    .description(errorMessage)
                     .build();
         }
 
@@ -51,13 +58,13 @@ public class UserController {
             return APIResponse.builder()
                     .data(null)
                     .code(ServiceResponse.ERROR)
-                    .description("An unexpected error occurred: " + e.getMessage())
+                    .description("Unexpected error occurred: " + e.getMessage())
                     .build();
         }
         return APIResponse.builder()
                 .data(newUser)
                 .code(ServiceResponse.SUCCESS)
-                .description("ADMIN added successfully")
+                .description(newUser.getRoles() + " added successfully")
                 .build();
     }
 }
