@@ -45,27 +45,27 @@ public class PortalUserService {
             throw APIException.apiExceptionError(HttpStatus.CONFLICT, errorMessage);
         }
 
-    Institution institution = institutionService.getInstitutionByCode(signUpRequest.getInstitutionCode());
-    Branch branch = branchService.getBranchByCode(signUpRequest.getBranchCode());
+        Institution institution = institutionService.getInstitutionByCode(signUpRequest.getInstitutionCode());
+        Branch branch = branchService.getBranchByCode(signUpRequest.getBranchCode());
 
-        if (!branch.getInstitutionId().equals(institution.getId())) {
-        String errorMessage = "Branch does not belong to the institution";
-        throw APIException.apiExceptionError(HttpStatus.BAD_REQUEST, errorMessage);
-    }
-
-    Optional<PortalUser> creatorProfile = userRepository.findById(signUpRequest.getAuditorId());
-        if (creatorProfile.isEmpty()) {
-        String errorMessage = "Initiator Account profile not found";
-        throw APIException.apiExceptionError(HttpStatus.FORBIDDEN, errorMessage);
-    }
-
-    PortalUser createdBy = creatorProfile.get();
-    //Role role = roleService.getRoleById(signUpRequest.getRoleId());
-
-        if (!isCompliantPassword(signUpRequest.getPassword())) {
-            String errorMessage = "Password not compliant";
+            if (!branch.getInstitutionId().equals(institution.getId())) {
+            String errorMessage = "Branch does not belong to the institution";
             throw APIException.apiExceptionError(HttpStatus.BAD_REQUEST, errorMessage);
-    }
+        }
+
+        Optional<PortalUser> creatorProfile = userRepository.findById(signUpRequest.getAuditorId());
+            if (creatorProfile.isEmpty()) {
+            String errorMessage = "Initiator Account profile not found";
+            throw APIException.apiExceptionError(HttpStatus.FORBIDDEN, errorMessage);
+        }
+
+        PortalUser createdBy = creatorProfile.get();
+        //Role role = roleService.getRoleById(signUpRequest.getRoleId());
+
+            if (!isCompliantPassword(signUpRequest.getPassword())) {
+                String errorMessage = "Password not compliant";
+                throw APIException.apiExceptionError(HttpStatus.BAD_REQUEST, errorMessage);
+        }
 
         List<Role> roles =roleRepository.findByNameIn(signUpRequest.getRoles());
         if (signUpRequest.getRoles().size() != roles.size()) {
