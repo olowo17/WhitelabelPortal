@@ -1,6 +1,6 @@
 package com.isw.ussd.whitelable.portal.dtos;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,9 +10,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AuthenticationRequest {
 
-    @NotNull(message = "Email cannot be null or empty")
+    @NotBlank(message = "Email cannot be null or empty")
     private String email;
 
-    @NotNull(message = "Password cannot be null or empty")
+    @NotBlank(message = "Password cannot be null or empty")
     private String password;
 }

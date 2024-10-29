@@ -1,7 +1,10 @@
 package com.isw.ussd.whitelable.portal.params;
 
+
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,37 +18,40 @@ import java.util.List;
 @AllArgsConstructor
 public class SignUpRequest {
 
-    @NotNull(message = "First name cannot be null or empty")
+    @NotBlank(message = "First name cannot be null or empty")
     private String firstName;
 
-    @NotNull(message = "Last name cannot be null or empty")
+    @NotBlank(message = "Last name cannot be null or empty")
     private String lastName;
 
-    @NotNull(message = "Email cannot be null or empty")
+    @NotBlank(message = "Email cannot be null or empty")
+//    @Pattern(regexp = "^[a-z0-9]+@(.+)$\n", message = "Invalid email format")
     private String email;
 
-    @NotNull(message = "Password cannot be null or empty")
+    @NotBlank(message = "Password cannot be null or empty")
     private String password;
 
     @NotNull(message = "Role ID cannot be null or empty")
     private Long roleId;
 
-    @NotNull(message = "Mobile number cannot be null or empty")
-    @Pattern(regexp = "^\\d{11,14}$", message = "Invalid mobile number format")
+    @NotBlank(message = "Mobile number cannot be null or empty")
+    @Pattern(regexp = "^\\d{10,14}$", message = "Invalid mobile number format")
     private String mobileNumber;
 
-    @NotNull(message = "Institution code cannot be null or empty")
+    @NotBlank(message = "Institution code cannot be null or empty")
     private String institutionCode;
 
     private Boolean isBranchAuthorizer = false;
 
     private Boolean isChecker = false;
 
-    @NotNull(message = "Branch code cannot be null or empty")
+    @NotBlank(message = "Branch code cannot be null or empty")
     private String branchCode;
 
     @NotNull(message = "Auditor ID cannot be null or empty")
     private Long auditorId;
 
-    private List<String> roles;
+    @NotNull(message = "Roles cannot be null")
+    @Size(min = 1, message = "There must be at least one role")
+    private List<@NotBlank(message = "Role cannot be blank") String> roles;
 }
