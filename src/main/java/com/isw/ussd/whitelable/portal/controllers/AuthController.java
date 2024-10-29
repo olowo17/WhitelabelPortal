@@ -2,6 +2,7 @@ package com.isw.ussd.whitelable.portal.controllers;
 
 import com.isw.ussd.whitelable.portal.exceptions.APIException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.isw.ussd.whitelable.portal.utils.ValidationUtil;
 import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -72,14 +73,9 @@ public class AuthController {
         logger.info("URL called: {}", request.getRequestURL());
 
         if (bindingResult.hasErrors()) {
-            String errorMessage = bindingResult.getFieldErrors().stream()
-                    .map(error -> error.getField() + ": " + error.getDefaultMessage())
-                    .collect(Collectors.joining(", "));
-            return APIResponse.builder()
-                    .code(ServiceResponse.ERROR)
-                    .description("Validation error(s): " + errorMessage)
-                    .build();
+            return ValidationUtil.generateErrorResponse(bindingResult);
         }
+
         Context ctx = contextService.getContextForHttpRequest();
         ResetPasswordResponse resetPasswordResponse = null;
 
@@ -125,14 +121,9 @@ public class AuthController {
         logger.info("URL called: {}", request.getRequestURL());;
 
         if (bindingResult.hasErrors()) {
-            String errorMessage = bindingResult.getFieldErrors().stream()
-                    .map(error -> error.getField() + ": " + error.getDefaultMessage())
-                    .collect(Collectors.joining(", "));
-            return APIResponse.builder()
-                    .code(ServiceResponse.ERROR)
-                    .description("Validation error(s): " + errorMessage)
-                    .build();
+            return ValidationUtil.generateErrorResponse(bindingResult);
         }
+
         Context ctx = contextService.getContextForHttpRequest();
         ResetPasswordResponse resetPasswordResponse = null;
 
@@ -180,13 +171,7 @@ public class AuthController {
         logger.info("URL called: {}", request.getRequestURL());
 
         if (bindingResult.hasErrors()) {
-            String errorMessage = bindingResult.getFieldErrors().stream()
-                    .map(error -> error.getField() + ": " + error.getDefaultMessage())
-                    .collect(Collectors.joining(", "));
-            return APIResponse.builder()
-                    .code(ServiceResponse.ERROR)
-                    .description("Validation error(s): " + errorMessage)
-                    .build();
+            return ValidationUtil.generateErrorResponse(bindingResult);
         }
 
         TokenUser user = null;

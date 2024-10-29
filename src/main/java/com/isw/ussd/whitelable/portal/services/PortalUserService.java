@@ -1,6 +1,5 @@
 package com.isw.ussd.whitelable.portal.services;
 
-import com.isw.ussd.whitelable.portal.controllers.UserController;
 import com.isw.ussd.whitelable.portal.entities.Branch;
 import com.isw.ussd.whitelable.portal.entities.Institution;
 import com.isw.ussd.whitelable.portal.entities.PortalUser;

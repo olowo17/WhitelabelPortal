@@ -5,6 +5,7 @@ import com.isw.ussd.whitelable.portal.entities.PortalUser;
 import com.isw.ussd.whitelable.portal.exceptions.APIException;
 import com.isw.ussd.whitelable.portal.params.SignUpRequest;
 import com.isw.ussd.whitelable.portal.services.PortalUserService;
+import com.isw.ussd.whitelable.portal.utils.ValidationUtil;
 import com.isw.ussd.whitelable.portal.vo.APIResponse;
 import com.isw.ussd.whitelable.portal.vo.ServiceResponse;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,15 +35,7 @@ public class UserController {
         logger.info("URL called: {}", request.getRequestURL());
 
         if (bindingResult.hasErrors()) {
-            String errorMessage = bindingResult.getFieldErrors().stream()
-                    .map(error -> error.getField() + ": " + error.getDefaultMessage())
-                    .collect(Collectors.joining(", "+'\''));
-
-            return APIResponse.builder()
-                    .data(null)
-                    .code(ServiceResponse.ERROR)
-                    .description(errorMessage)
-                    .build();
+            return ValidationUtil.generateErrorResponse(bindingResult);
         }
 
         PortalUser newUser;
