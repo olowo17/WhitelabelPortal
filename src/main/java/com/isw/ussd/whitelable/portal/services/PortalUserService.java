@@ -10,13 +10,14 @@ import com.isw.ussd.whitelable.portal.params.SignUpRequest;
 import com.isw.ussd.whitelable.portal.repositories.RoleRepository;
 import com.isw.ussd.whitelable.portal.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import static com.isw.ussd.whitelable.portal.utils.GeneralConstants.PASSWORD_PATTERN;
@@ -29,7 +30,8 @@ public class PortalUserService {
     private final InstitutionService institutionService;
     private final RoleRepository roleRepository;
 
-    private static final Logger logger = Logger.getLogger(PortalUserService.class.getName());
+    static final Logger logger = LoggerFactory.getLogger(PortalUserService.class);
+
     BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public static boolean isCompliantPassword(String password) {
@@ -38,6 +40,10 @@ public class PortalUserService {
     }
 
     public PortalUser registerPortalUser(SignUpRequest signUpRequest){
+        logger.info("registerPortalUser() called");
+
+        logger.info("Email: {}", signUpRequest.getEmail());
+        logger.info("Password: {}", signUpRequest.getEmail());
 
         Optional<PortalUser> existingAccount = userRepository.findByUsername(signUpRequest.getEmail());
         if (existingAccount.isPresent()) {
@@ -94,7 +100,7 @@ public class PortalUserService {
         user = userRepository.save(user);
     } catch (Exception ex) {
         String errorMessage = "Error occurred while creating admin profile, please contact service admin";
-        logger.log(Level.SEVERE, errorMessage, ex);
+        logger.info(errorMessage, ex, Level.SEVERE);
         throw APIException.apiExceptionError(HttpStatus.INTERNAL_SERVER_ERROR, errorMessage);
     }
         return user;
