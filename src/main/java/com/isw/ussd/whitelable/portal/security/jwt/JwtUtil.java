@@ -42,11 +42,11 @@ public class JwtUtil {
 
     // Method to extract the JWT token from the request headers
     private String extractTokenFromHeader(HttpServletRequest request) {
-        String token = request.getHeader("Authorization"); // Or request.getHeader("sessionID");
-        if (token == null || !token.startsWith("Bearer ")) {
+        String token = request.getHeader("sessionid"); // Or request.getHeader("sessionID");
+        if (token == null) {
             throw new RuntimeException("Missing or invalid Authorization header");
         }
-        return token.substring(7); // Remove "Bearer " prefix
+        return token; // Remove "Bearer " prefix
     }
 
     private SecretKey getSigningKey() {

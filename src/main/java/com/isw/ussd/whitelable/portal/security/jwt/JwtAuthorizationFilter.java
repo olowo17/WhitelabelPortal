@@ -26,8 +26,8 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        String header = request.getHeader("Authorization");
-        if (Objects.isNull(header) || !header.startsWith("Bearer ")) {
+        String header = request.getHeader("sessionid");
+        if (Objects.isNull(header)) {
             chain.doFilter(request, response);
             return;
         }
@@ -37,13 +37,13 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     }
 
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
-        String token = request.getHeader("Authorization");
+        String token = request.getHeader("sessionid");
         UsernamePasswordAuthenticationToken authentication = null;
         if (Objects.nonNull(token)) {
-            String username = jwtUtil.extractUsernameFromToken(token.replace("Bearer ", ""));
+            String username = jwtUtil.extractUsernameFromToken(token);
             if (Objects.nonNull(username)) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                if (jwtUtil.validateToken(token.replace("Bearer ", ""), userDetails)) {
+                if (jwtUtil.validateToken(token, userDetails)) {
                     authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 }
             }

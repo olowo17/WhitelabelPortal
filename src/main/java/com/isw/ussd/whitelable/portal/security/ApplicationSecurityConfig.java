@@ -38,7 +38,7 @@ public class ApplicationSecurityConfig {
         httpSecurity.csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable())
                 .authorizeHttpRequests(requests ->
 //                        requests.requestMatchers("/auth/**","/resource/secure","/resource/signup").permitAll()
-                        requests.requestMatchers("/auth/**","/mobile-portal/user/authenticate", "/api/roles","/user/change-password","/user/password-reset/**").permitAll()
+                        requests.requestMatchers("/auth/**","/mobile-portal/user/authenticate", "/api/roles","/mobile-portal/user/change-password","/mobile-portal/user/password-reset/**").permitAll()
                                 .requestMatchers("/resource/secure").hasAuthority("SUPER_ADMIN")
                                 //.requestMatchers("/api/auth/signup").permitAll()
                                 .anyRequest()
