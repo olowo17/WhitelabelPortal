@@ -1,9 +1,10 @@
 package com.isw.ussd.whitelable.portal.utils;
 
 import com.isw.ussd.whitelable.portal.configuration.ConfigService;
-import com.isw.ussd.whitelable.portal.entities.Institution;
+import com.isw.ussd.whitelable.portal.entities.user.Institution;
 import com.isw.ussd.whitelable.portal.exceptions.PortalException;
-import com.isw.ussd.whitelable.portal.repositories.InstitutionRepository;
+import com.isw.ussd.whitelable.portal.repositories.user.InstitutionRepository;
+import com.isw.ussd.whitelable.portal.repositories.user.InstitutionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

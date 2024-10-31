@@ -1,14 +1,14 @@
 package com.isw.ussd.whitelable.portal.services;
 
-import com.isw.ussd.whitelable.portal.entities.Branch;
-import com.isw.ussd.whitelable.portal.entities.Institution;
-import com.isw.ussd.whitelable.portal.entities.PortalUser;
-import com.isw.ussd.whitelable.portal.entities.Role;
+import com.isw.ussd.whitelable.portal.entities.portal.Branch;
+import com.isw.ussd.whitelable.portal.entities.user.Institution;
+import com.isw.ussd.whitelable.portal.entities.portal.PortalUser;
+import com.isw.ussd.whitelable.portal.entities.portal.Role;
 import com.isw.ussd.whitelable.portal.exceptions.APIException;
 import com.isw.ussd.whitelable.portal.exceptions.RolesNotAvailableException;
 import com.isw.ussd.whitelable.portal.params.SignUpRequest;
-import com.isw.ussd.whitelable.portal.repositories.RoleRepository;
-import com.isw.ussd.whitelable.portal.repositories.UserRepository;
+import com.isw.ussd.whitelable.portal.repositories.portal.RoleRepository;
+import com.isw.ussd.whitelable.portal.repositories.portal.PortalUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -24,7 +24,7 @@ import static com.isw.ussd.whitelable.portal.utils.GeneralConstants.PASSWORD_PAT
 @RequiredArgsConstructor
 @Service
 public class PortalUserService {
-    private final UserRepository userRepository;
+    private final PortalUserRepository userRepository;
     private final BranchService branchService;
     private final InstitutionService institutionService;
     private final RoleRepository roleRepository;

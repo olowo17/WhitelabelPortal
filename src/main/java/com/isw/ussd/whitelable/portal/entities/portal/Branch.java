@@ -1,4 +1,4 @@
-package com.isw.ussd.whitelable.portal.entities;
+package com.isw.ussd.whitelable.portal.entities.portal;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -7,16 +7,25 @@ import lombok.*;
 @Setter
 @Entity
 @Builder
-@Table(name = "Branches")
+@Table(name = "branches")
 @NoArgsConstructor
 @AllArgsConstructor
 //@JsonIgnoreProperties(ignoreUnknown = true)
 public class Branch {
-    Long institutionId;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false, updatable = false)
     private Long id;
+
+    @Column(name = "code")
     private String code;
+
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "active_status")
     private boolean activeStatus;
+
+    @Column(name = "institution_id")
+    private Long institutionId;
 }

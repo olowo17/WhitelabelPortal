@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.isw.ussd.whitelable.portal.dtos.AuthenticationResponse;
 import com.isw.ussd.whitelable.portal.dtos.CustomUserDetails;
 import com.isw.ussd.whitelable.portal.dtos.PortalUserDto;
-import com.isw.ussd.whitelable.portal.entities.Institution;
-import com.isw.ussd.whitelable.portal.entities.PortalUser;
+import com.isw.ussd.whitelable.portal.entities.user.Institution;
+import com.isw.ussd.whitelable.portal.entities.portal.PortalUser;
 import com.isw.ussd.whitelable.portal.enums.AuditType;
 import com.isw.ussd.whitelable.portal.enums.PendingRequestStatus;
 import com.isw.ussd.whitelable.portal.exceptions.APIException;
@@ -13,7 +13,7 @@ import com.isw.ussd.whitelable.portal.exceptions.UserNotFoundException;
 import com.isw.ussd.whitelable.portal.infrastructure.context.Context;
 import com.isw.ussd.whitelable.portal.mappers.PortalUserMapper;
 import com.isw.ussd.whitelable.portal.params.*;
-import com.isw.ussd.whitelable.portal.repositories.UserRepository;
+import com.isw.ussd.whitelable.portal.repositories.portal.PortalUserRepository;
 import com.isw.ussd.whitelable.portal.security.jwt.JwtUtil;
 import com.isw.ussd.whitelable.portal.utils.DateHelper;
 import com.isw.ussd.whitelable.portal.utils.LocaleHandler;
@@ -51,7 +51,7 @@ public class AuthService {
     @Autowired
     private MessagingService messagingService;
     @Autowired
-    private UserRepository userRepository;
+    private PortalUserRepository userRepository;
 
 
     @Value("${frontend.reset.completeURL}")

@@ -1,7 +1,7 @@
 package com.isw.ussd.whitelable.portal.controllers;
 
 
-import com.isw.ussd.whitelable.portal.entities.PortalUser;
+import com.isw.ussd.whitelable.portal.entities.portal.PortalUser;
 import com.isw.ussd.whitelable.portal.exceptions.APIException;
 import com.isw.ussd.whitelable.portal.params.SignUpRequest;
 import com.isw.ussd.whitelable.portal.services.PortalUserService;

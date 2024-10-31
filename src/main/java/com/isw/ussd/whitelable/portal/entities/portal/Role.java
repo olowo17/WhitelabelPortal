@@ -1,4 +1,4 @@
-package com.isw.ussd.whitelable.portal.entities;
+package com.isw.ussd.whitelable.portal.entities.portal;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -17,13 +17,27 @@ import java.util.Date;
 public class Role{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false, updatable = false)
     private Long id;
+
+    @Column(name = "institution_id")
     Long institutionId;
+
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "description")
     private String description;
+
+    @Column(name = "authorizer")
     private boolean authorizer;
+
+
     @Temporal(jakarta.persistence.TemporalType.TIMESTAMP)
+    @Column(name = "date_created")
     private Date dateCreated;
+
     @Temporal(jakarta.persistence.TemporalType.TIMESTAMP)
+    @Column(name = "date_updated")
     private Date dateUpdated;
 }

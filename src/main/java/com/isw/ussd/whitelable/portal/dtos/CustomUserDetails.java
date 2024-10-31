@@ -1,6 +1,6 @@
 package com.isw.ussd.whitelable.portal.dtos;
 
-import com.isw.ussd.whitelable.portal.entities.PortalUser;
+import com.isw.ussd.whitelable.portal.entities.portal.PortalUser;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

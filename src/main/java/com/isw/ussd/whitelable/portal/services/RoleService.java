@@ -5,13 +5,13 @@
  */
 package com.isw.ussd.whitelable.portal.services;
 
-import com.isw.ussd.whitelable.portal.entities.Menu;
-import com.isw.ussd.whitelable.portal.entities.PortalUser;
-import com.isw.ussd.whitelable.portal.entities.Role;
-import com.isw.ussd.whitelable.portal.entities.RoleFunction;
+import com.isw.ussd.whitelable.portal.entities.portal.Menu;
+import com.isw.ussd.whitelable.portal.entities.portal.PortalUser;
+import com.isw.ussd.whitelable.portal.entities.portal.Role;
+import com.isw.ussd.whitelable.portal.entities.portal.RoleFunction;
 import com.isw.ussd.whitelable.portal.infrastructure.context.Context;
-import com.isw.ussd.whitelable.portal.repositories.RoleFunctionRepository;
-import com.isw.ussd.whitelable.portal.repositories.RoleRepository;
+import com.isw.ussd.whitelable.portal.repositories.portal.RoleFunctionRepository;
+import com.isw.ussd.whitelable.portal.repositories.portal.RoleRepository;
 import com.isw.ussd.whitelable.portal.utils.LocaleHandler;
 import com.isw.ussd.whitelable.portal.vo.MenuInfoDto;
 import lombok.RequiredArgsConstructor;
@@ -59,7 +59,7 @@ public class RoleService {
 
     public List<MenuInfoDto> getMenus(Context ctx, long roleID) {
 
-        List<RoleFunction> resultList = roleFunctionRepository.findByRole(roleID);
+        List<RoleFunction> resultList = roleFunctionRepository.findByRoleId(roleID);
 
         List<MenuInfoDto> list = new ArrayList<>();
 

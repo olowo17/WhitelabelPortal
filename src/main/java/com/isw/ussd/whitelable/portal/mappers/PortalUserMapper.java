@@ -3,9 +3,11 @@ package com.isw.ussd.whitelable.portal.mappers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.isw.ussd.whitelable.portal.dtos.PortalUserDto;
 import com.isw.ussd.whitelable.portal.dtos.TokenUser;
-import com.isw.ussd.whitelable.portal.entities.Institution;
-import com.isw.ussd.whitelable.portal.entities.PortalUser;
-import com.isw.ussd.whitelable.portal.repositories.InstitutionRepository;
+import com.isw.ussd.whitelable.portal.entities.user.Institution;
+import com.isw.ussd.whitelable.portal.entities.portal.PortalUser;
+import com.isw.ussd.whitelable.portal.entities.user.Institution;
+import com.isw.ussd.whitelable.portal.repositories.user.InstitutionRepository;
+import com.isw.ussd.whitelable.portal.repositories.user.InstitutionRepository;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 

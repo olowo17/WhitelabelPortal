@@ -7,9 +7,9 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import com.isw.ussd.whitelable.portal.dtos.TokenUser;
-import com.isw.ussd.whitelable.portal.entities.PortalUser;
+import com.isw.ussd.whitelable.portal.entities.portal.PortalUser;
 import com.isw.ussd.whitelable.portal.mappers.PortalUserMapper;
-import com.isw.ussd.whitelable.portal.repositories.UserRepository;
+import com.isw.ussd.whitelable.portal.repositories.portal.PortalUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,7 +22,7 @@ import java.util.function.Function;
 @Component
 public class JwtUtil {
     @Autowired
-    private UserRepository userRepository;
+    private PortalUserRepository userRepository;
 
     @Value("${jwt.secret}")
     private String secret;

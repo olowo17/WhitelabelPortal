@@ -1,6 +1,6 @@
-package com.isw.ussd.whitelable.portal.repositories;
+package com.isw.ussd.whitelable.portal.repositories.portal;
 
-import com.isw.ussd.whitelable.portal.entities.Role;
+import com.isw.ussd.whitelable.portal.entities.portal.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
