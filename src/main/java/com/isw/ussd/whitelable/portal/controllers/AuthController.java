@@ -68,7 +68,7 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/password-reset/initiate")
+    @PostMapping("/password-reset/initate")
     public APIResponse<?> initiateReset(@Valid @RequestBody ResetPasswordRequest resetPasswordRequest, BindingResult bindingResult) {
         logger.info("URL called: {}", request.getRequestURL());
 
