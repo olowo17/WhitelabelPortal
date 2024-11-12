@@ -19,12 +19,12 @@ public class ChangePasswordRequest {
     @NotBlank(message = "Password cannot be null or empty")
     private String proposedPassword;
 
-    @NotBlank(message = "Username cannot be null or empty")
+//    @NotBlank(message = "Username cannot be null or empty")
     private String userName;
 
-    @NotBlank(message = "Institution Code cannot be null or empty")
+//    @NotBlank(message = "Institution Code cannot be null or empty")
     private String institutionCode;
 
-    @NotNull(message = "Auditor ID cannot be null or empty")
+//    @NotNull(message = "Auditor ID cannot be null or empty")
     private Long auditorId;
 }

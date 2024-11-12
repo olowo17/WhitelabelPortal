@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/resource")
 public class ResourceController {
 
+
     @GetMapping("/secure")
     public ResponseEntity<String> secureResource(){
         return ResponseEntity.ok("Yes, Your JWT Works...");

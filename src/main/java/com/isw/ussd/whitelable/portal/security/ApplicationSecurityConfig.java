@@ -15,6 +15,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
+
+import static org.springframework.http.HttpMethod.*;
+import static org.springframework.http.HttpMethod.DELETE;
 
 @Configuration
 @EnableWebSecurity
@@ -30,7 +38,7 @@ public class ApplicationSecurityConfig {
         httpSecurity.csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable())
                 .authorizeHttpRequests(requests ->
 //                        requests.requestMatchers("/auth/**","/resource/secure","/resource/signup").permitAll()
-                        requests.requestMatchers("/auth/**","/mobile-portal/user/authenticate","/api/roles","/mobile-portal/user/change-password","/mobile-portal/user/password-reset/**").permitAll()
+                        requests.requestMatchers("/auth/**","/mobile-portal/user/authenticate", "/api/roles","/mobile-portal/user/change-password","/mobile-portal/user/password-reset/**").permitAll()
                                 .requestMatchers("/resource/secure").hasAuthority("SUPER_ADMIN")
                                 //.requestMatchers("/api/auth/signup").permitAll()
                                 .anyRequest()
@@ -39,6 +47,7 @@ public class ApplicationSecurityConfig {
                 .headers(headers -> headers
                         .frameOptions(frameOptions -> frameOptions.sameOrigin())  // Allow frames from the same origin
                 )
+                .cors(c -> c.configurationSource(corsConfigurationSource()))
                 .addFilter(new JwtAuthenticationFilter(authenticationManager(httpSecurity.getSharedObject(AuthenticationConfiguration.class)), jwtUtil))
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(httpSecurity.getSharedObject(AuthenticationConfiguration.class)), jwtUtil, userDetailsService));
         return httpSecurity.build();
@@ -52,5 +61,24 @@ public class ApplicationSecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        final CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.setAllowedOrigins(List.of("http://vbp-test.vanso.com:8080"));
+        corsConfiguration.setAllowedMethods(List.of(HEAD.name(), GET.name(),
+                POST.name(), PUT.name(), PATCH.name(), DELETE.name()
+        ));
+        corsConfiguration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type", "Accept",
+                "Access-Control-Allow-Headers", "Access-Control-Allow-Origin", "Access-Control-Request-Method",
+                "Access-Control-Request-Headers", "Origin", "appversion", "countrycode", "deviceid", "languagecode", "sessionid"
+        ));
+        corsConfiguration.setAllowCredentials(true);
+        corsConfiguration.setMaxAge(3600L);
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfiguration);
+
+        return source;
     }
 }

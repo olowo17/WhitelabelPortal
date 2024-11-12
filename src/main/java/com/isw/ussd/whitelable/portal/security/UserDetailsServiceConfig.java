@@ -1,8 +1,8 @@
 package com.isw.ussd.whitelable.portal.security;
 
 import com.isw.ussd.whitelable.portal.dtos.CustomUserDetails;
-import com.isw.ussd.whitelable.portal.entities.PortalUser;
-import com.isw.ussd.whitelable.portal.repositories.UserRepository;
+import com.isw.ussd.whitelable.portal.entities.portal.PortalUser;
+import com.isw.ussd.whitelable.portal.repositories.portal.PortalUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,7 +14,7 @@ import java.util.Optional;
 @Configuration
 @RequiredArgsConstructor
 public class UserDetailsServiceConfig {
-private final UserRepository userRepository;
+private final PortalUserRepository userRepository;
 //    @Bean
 //    public UserDetailsService userDetailsService() {
 //        return username -> {

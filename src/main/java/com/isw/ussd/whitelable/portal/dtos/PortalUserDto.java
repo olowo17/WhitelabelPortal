@@ -1,8 +1,9 @@
 package com.isw.ussd.whitelable.portal.dtos;
 
-import com.isw.ussd.whitelable.portal.entities.Branch;
-import com.isw.ussd.whitelable.portal.entities.Institution;
-import com.isw.ussd.whitelable.portal.entities.Role;
+import com.isw.ussd.whitelable.portal.entities.portal.Branch;
+import com.isw.ussd.whitelable.portal.entities.user.Institution;
+import com.isw.ussd.whitelable.portal.entities.portal.Role;
+import com.isw.ussd.whitelable.portal.entities.user.Institution;
 import lombok.Data;
 
 import java.util.Date;

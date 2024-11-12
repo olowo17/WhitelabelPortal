@@ -1,11 +1,11 @@
 package com.isw.ussd.whitelable.portal.services;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.isw.ussd.whitelable.portal.controllers.AuthController;
 import com.isw.ussd.whitelable.portal.dtos.AuthenticationResponse;
 import com.isw.ussd.whitelable.portal.dtos.CustomUserDetails;
 import com.isw.ussd.whitelable.portal.dtos.PortalUserDto;
-import com.isw.ussd.whitelable.portal.entities.Institution;
-import com.isw.ussd.whitelable.portal.entities.PortalUser;
+import com.isw.ussd.whitelable.portal.entities.user.Institution;
+import com.isw.ussd.whitelable.portal.entities.portal.PortalUser;
 import com.isw.ussd.whitelable.portal.enums.AuditType;
 import com.isw.ussd.whitelable.portal.enums.PendingRequestStatus;
 import com.isw.ussd.whitelable.portal.exceptions.APIException;
@@ -13,10 +13,11 @@ import com.isw.ussd.whitelable.portal.exceptions.UserNotFoundException;
 import com.isw.ussd.whitelable.portal.infrastructure.context.Context;
 import com.isw.ussd.whitelable.portal.mappers.PortalUserMapper;
 import com.isw.ussd.whitelable.portal.params.*;
-import com.isw.ussd.whitelable.portal.repositories.UserRepository;
+import com.isw.ussd.whitelable.portal.repositories.portal.PortalUserRepository;
 import com.isw.ussd.whitelable.portal.security.jwt.JwtUtil;
 import com.isw.ussd.whitelable.portal.utils.DateHelper;
 import com.isw.ussd.whitelable.portal.utils.LocaleHandler;
+import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,13 +52,16 @@ public class AuthService {
     @Autowired
     private MessagingService messagingService;
     @Autowired
-    private UserRepository userRepository;
+    private PortalUserRepository userRepository;
+
+    @Autowired
+    private HttpServletRequest request;
 
 
     @Value("${frontend.reset.completeURL}")
     private String completeResetURL;
 
-    private static final Logger LOG = LoggerFactory.getLogger(AuthService.class.getName());
+    static final Logger logger = LoggerFactory.getLogger(AuthController.class);
     BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public PortalUser getUserByUserNameOrEmail(Context ctx, String identifier) {
@@ -71,13 +75,13 @@ public class AuthService {
         return savedPortalUser.get();
     }
 
-    public AuthenticationResponse authenticateUser(String email, String password, Context ctx)
-            throws BadCredentialsException, JsonProcessingException {
+    public AuthenticationResponse authenticateUser(String email, String password, Context ctx) throws BadCredentialsException {
+        logger.info("authenticateUser() called");
 
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
         } catch (BadCredentialsException badCredentialsException) {
-            LOG.error("Incorrect username or password");
+            logger.error("Incorrect username or password");
             throw badCredentialsException;
         }
 
@@ -106,6 +110,10 @@ public class AuthService {
     }
 
     public ResetPasswordResponse initiateResetPassword(Context ctx, ResetPasswordRequest resetPasswordRequest){
+        logger.info("initiateResetPassword() called");
+
+        logger.info(resetPasswordRequest.getEmail());
+
         PortalUser user = getUserByUserNameOrEmail(ctx,resetPasswordRequest.getEmail());
         Institution institution = institutionService.getInstitutionById (user.getInstitutionId());
 
@@ -149,6 +157,8 @@ public class AuthService {
     }
 
     public ResetPasswordResponse changePassword(Context ctx, ChangePasswordRequest changeRequest){
+        logger.info("changePassword() called");
+
         PortalUser user = getUserByUserNameOrEmail(ctx,changeRequest.getUserName());
         try {
             if (!passwordEncoder.matches(changeRequest.getCurrentPassword(),user.getPassword())){
@@ -184,6 +194,8 @@ public class AuthService {
     }
 
     public ResetPasswordResponse completePasswordReset(Context ctx, CompleteResetPasswordRequest completeResetPasswordRequest){
+        logger.info("completePasswordReset() called");
+
          String email = jwtUtil.extractUsernameFromToken(completeResetPasswordRequest.getToken());
          PortalUser user = userRepository.findByUsername(email).orElseThrow(()->new UserNotFoundException("user not found"));
 
@@ -192,12 +204,11 @@ public class AuthService {
          }
          String encodedPassword = passwordEncoder.encode(completeResetPasswordRequest.getPassword());
          user.setPassword(encodedPassword);
-         // might not be necesary here
+         // might not be necessary here
         // user.setFirstLogin(false);
          userRepository.save(user);
 
-
-        String details = String.format("Complete admin password reset. Username: %s", user.getUsername());
+        String details = String.format("Complete Admin password reset. Username: %s", user.getUsername());
         CreateAudit audit = CreateAudit.builder()
                 .actionOn(user.getUsername())
                 .actionBy(user.getUsername())
@@ -217,8 +228,9 @@ public class AuthService {
                 .build();
     }
 
-
     private void sendResetEmail(Context ctx, ResetTokenInfo resetTokenInfo, String resetToken) {
+        logger.info("sendResetEmail() called");
+
         String content = String.format("%s %s?token=%s", ctx.getMessage(PASSWORD_RESET_EMAIL_MESSAGE), completeResetURL, resetToken);
         messagingService.sendEmail(
                 content, resetTokenInfo.getEmail(),

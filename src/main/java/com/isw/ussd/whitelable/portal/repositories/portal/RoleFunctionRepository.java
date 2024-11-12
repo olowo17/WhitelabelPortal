@@ -1,6 +1,6 @@
-package com.isw.ussd.whitelable.portal.repositories;
+package com.isw.ussd.whitelable.portal.repositories.portal;
 
-import com.isw.ussd.whitelable.portal.entities.RoleFunction;
+import com.isw.ussd.whitelable.portal.entities.portal.RoleFunction;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -13,16 +13,14 @@ import java.util.List;
 @Repository
 public interface RoleFunctionRepository extends JpaRepository<RoleFunction, Long> {
 
-    @Query(value = "SELECT r FROM RoleFunction r WHERE r.role.id = :roleID")
-    List<RoleFunction> findByRole(@Param("roleID") long roleID);
+//    @Query(value = "SELECT r FROM role_functions r WHERE r.role.id = :roleID")
+    List<RoleFunction> findByRoleId(Long roleID);
 
 //    @Query(value = "DELETE FROM RoleFunction AS r WHERE r.role.id = :roleID")
 
     @Modifying
     @Transactional
-    @Query(value = "DELETE FROM RoleFunctions WHERE role_id = :roleID", nativeQuery = true)
-    void deleteByRoleId(
-            @Param("roleID") Long roleID
-    );
+//    @Query(value = "DELETE FROM role_functions r WHERE role_id = :roleID", nativeQuery = true)
+    void deleteByRoleId(Long roleID);
 
 }

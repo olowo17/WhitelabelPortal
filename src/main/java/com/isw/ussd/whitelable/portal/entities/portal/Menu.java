@@ -1,4 +1,4 @@
-package com.isw.ussd.whitelable.portal.entities;
+package com.isw.ussd.whitelable.portal.entities.portal;
 
 import jakarta.persistence.*;
 
@@ -10,14 +10,27 @@ import jakarta.persistence.*;
 public class Menu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false, updatable = false)
     private Long id;
 
+    @Column(name = "title")
     private String title;
+
+    @Column(name = "router_link")
     private String routerLink;
+
+    @Column(name = "href")
     private String href;
+
+    @Column(name = "icon")
     private String icon;
+
+    @Column(name = "target")
     private String target;
+
+    @Column(name = "has_sub_menu")
     private boolean hasSubMenu;
+
     @ManyToOne
     private Menu parent;
 

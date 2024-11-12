@@ -1,8 +1,10 @@
 package com.isw.ussd.whitelable.portal.services;
 
-import com.isw.ussd.whitelable.portal.entities.Institution;
+import com.isw.ussd.whitelable.portal.entities.user.Institution;
+import com.isw.ussd.whitelable.portal.entities.user.Institution;
 import com.isw.ussd.whitelable.portal.exceptions.APIException;
-import com.isw.ussd.whitelable.portal.repositories.InstitutionRepository;
+import com.isw.ussd.whitelable.portal.repositories.user.InstitutionRepository;
+import com.isw.ussd.whitelable.portal.repositories.user.InstitutionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
