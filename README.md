@@ -1,6 +1,6 @@
 # Spring Boot Application with JWT Authentication
 
-This project demonstrates the implementation of **JWT (JSON Web Token)** based authentication and authorization using **Spring Security** in a Spring Boot application.
+This project involves building a role-based access control admin dashboard where clients can manage users and customers activities.
 
 ## Features
 
@@ -13,22 +13,13 @@ This project demonstrates the implementation of **JWT (JSON Web Token)** based a
 ## Technologies Used
 
 - **Java 17**
-- **Spring Boot 3.3.3**
+- **Spring Boot**
 - **Spring Security**
 - **JWT (JSON Web Token)**
 - **BCrypt Password Encoder**
-- **H2 Database** (for testing purposes)
+- **My Sql** 
 - **Lombok**
 - **Maven**
-
-
-## Endpoints
-
-| HTTP Method | Endpoint           | Description                     | Access Level        |
-|-------------|--------------------|---------------------------------|---------------------|
-| POST        | `/api/auth/login`  | Authenticates and returns JWT   | Public              |
-| POST        | `/api/auth//register` | Registers a new user         | Public              |
-| GET         | `/resource/secure` | Secure Endpoint                 | Role: ALL           |
 
 ## JWT Workflow
 
@@ -40,7 +31,7 @@ This project demonstrates the implementation of **JWT (JSON Web Token)** based a
 ## Setup Instructions
 
 1. **Clone the repository**:
-  git clone https://github.com/eramanmalhi/LazyProgrammer-SpringSecurity-JWT.git
+  git clone https://github.com/olowo17/WhitelabelPortal.git
   cd spring-boot-jwt-security
 
 3. **Build and Run**:
